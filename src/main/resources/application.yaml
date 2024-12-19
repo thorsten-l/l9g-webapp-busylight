@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: busylight
+
+logging:
+  pattern:
+    console: "%date{yyyy-MM-dd HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger:%line - %yellow(%msg %n)"
+  level:
+    root: INFO
+#    l9g: DEBUG
+
+server:
+  port: 31415
+
+usb-device:
+  vendor-id: 0x04D8
+  product-id: 0xF372
