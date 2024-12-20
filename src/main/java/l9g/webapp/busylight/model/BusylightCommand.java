@@ -15,7 +15,10 @@
  */
 package l9g.webapp.busylight.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,24 +31,35 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = "Represents a command sent to a Busylight device.")
 public class BusylightCommand
 {
-  private byte command;
+    @Schema(description = "Command byte of the Busylight message.", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte command;
 
-  private byte code;
+    @Schema(description = "Code byte of the Busylight message. (e.g. 71='G' for green)", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "71")
+    private byte code;
 
-  private byte red;
+    @Schema(description = "Red color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte red;
 
-  private byte green;
+    @Schema(description = "Green color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte green;
 
-  private byte blue;
+    @Schema(description = "Blue color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte blue;
 
-  private byte advanced0;
+    @Schema(description = "Advanced data byte 0 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte advanced0;
 
-  private byte advanced1;
+    @Schema(description = "Advanced data byte 1 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte advanced1;
 
-  private byte advanced2;
+    @Schema(description = "Advanced data byte 2 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
+    private byte advanced2;
 
+
+  @JsonIgnore
   public byte[] getMessage()
   {
     return new byte[]
@@ -57,10 +71,11 @@ public class BusylightCommand
     };
   }
 
-  public static BusylightCommand solidColor( String colorName )
+  public static BusylightCommand solidColor(String colorName)
   {
     BusylightCommand bc = new BusylightCommand();
     bc.code = BusylightColor.fromName(colorName).getCode();
     return bc;
   }
+
 }
