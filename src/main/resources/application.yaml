@@ -24,6 +24,7 @@ springdoc:
 
 server:
   port: 31415
+  address: 127.0.0.1
 
 usb-device:
   vendor-id: 0x04D8
