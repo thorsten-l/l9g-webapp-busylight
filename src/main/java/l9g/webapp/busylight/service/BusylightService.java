@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package l9g.webapp.busylight;
+package l9g.webapp.busylight.service;
 
 import l9g.webapp.busylight.model.BusylightCommand;
 import l9g.webapp.busylight.model.BusylightStatus;
