@@ -16,7 +16,7 @@ The JAR file is executable.
 ### Windows 
 `.\target\busylight.jar` (starts in background)
 
-`java -jar .\target\busylight.jar` (starts in forground and shows logging)
+`java -jar .\target\busylight.jar` (starts in foreground and shows logging)
 
 ## Busylight API Documentation
 - http://localhost:31415
