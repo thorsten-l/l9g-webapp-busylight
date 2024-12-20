@@ -54,6 +54,9 @@ public class BusylightService implements HidServicesListener
   )
   {
     this.busylightStatus = new BusylightStatus();
+    busylightStatus.setErrorMessage("busylight disconnected");
+    busylightStatus.setStatus(-4);
+
     this.vendorId = vendorId;
     this.productId = productId;
     this.busylightDevice = null;
