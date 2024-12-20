@@ -1,5 +1,14 @@
 # l9g-webapp-busylight
 
+## Build
+
+`mvn clean install`
+
+## Run
+
+`./target/busylight.jar`
+(the JAR file is executable)
+
 ## Busylight API Documentation
 - http://localhost:31415
 
@@ -9,5 +18,7 @@
 - https://luxafor.de/products/busylight
 
 ### Software
-- https://github.com/gary-rowe/hid4java
+- Java JDK 21 - https://bell-sw.com/pages/downloads/
+- Maven - https://maven.apache.org/
+- HID4Java - https://github.com/gary-rowe/hid4java
 
