@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import l9g.webapp.busylight.model.BusylightCommand;
+import l9g.webapp.busylight.model.BusylightStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -45,12 +46,15 @@ import org.springframework.web.bind.annotation.RestController;
   @Info(
     title = "Busylight API Documentation",
     version = "1.0.0",
-    description = "An API for educational purposes, dealing with a Luxafor Flag",
+    description = "An API for educational purposes, dealing with a Luxafor Flag. "
+    + "To minimize data transfer, only non-default attributes need to be sent in requests. "
+    + "In the same way, responses will only include non-default attributes. "
+    + "That means attributes with values of 0 or null will be omitted during data transfer.",
     license =
     @License(name = "Apache License Version 2.0 ",
              url = "https://www.apache.org/licenses/LICENSE-2.0.txt"),
     contact =
-    @Contact(url = "https://github.com/thorsten-l",
+    @Contact(url = "https://github.com/thorsten-l/l9g-webapp-busylight",
              name = "Thorsten Ludewig",
              email = "t.ludewig@gmail.com")
   )
@@ -65,32 +69,66 @@ public class BusylightController
 {
   private final BusylightService busylightService;
 
-  @Operation(summary = "Set the Busylight color", 
-             description = "Sets the color of the connected Busylight. Supported color formats depend on the implementation of `busylightService.solidColor()`. At this time error handling is missing!")
+  @Operation(summary = "Get Busylight status",
+             description = "Retrieves the current status of the Busylight device, including connection status, error messages, and the last command sent.")
   @ApiResponses(value =
   {
-    @ApiResponse(responseCode = "200", description = "Successfully set the color", content =
-                 @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema =
-                          @Schema(implementation = String.class)))
+    @ApiResponse(responseCode = "200",
+                 description = "Successfully retrieved Busylight status",
+                 content =
+                 @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                          schema =
+                          @Schema(implementation = BusylightStatus.class)))
+  })
+  @GetMapping("/status")
+  public BusylightStatus status()
+  {
+    log.debug("status");
+    return busylightService.getBusylightStatus();
+  }
+
+  @Operation(summary = "Set Busylight color",
+             description = "Sets the Busylight to a solid color. Supported colors are: red, green, blue, cyan, magenta, yellow, white, and off.")
+  @ApiResponses(value =
+  {
+    @ApiResponse(responseCode = "200",
+                 description = "Successfully set the Busylight color",
+                 content =
+                 @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                          schema =
+                          @Schema(implementation = BusylightStatus.class))),
+    @ApiResponse(responseCode = "400", description = "Invalid color provided")
   })
   @GetMapping("/color/{color}")
-  public String color(
-    @Parameter(description = "Available colors are: red, green, blue, cyan, magenta, yellow, white and off", 
+  public BusylightStatus color(
+    @Parameter(description = "Available colors are: red, green, blue, cyan, magenta, yellow, white and off",
                required = true)
     @PathVariable(required = true, name = "color") String color)
   {
     log.debug("color: {}", color);
-    busylightService.solidColor(color);
-    return "{ \"status\":\"OK\"}";
+    return busylightService.solidColor(color);
   }
 
+  @Operation(summary = "Send custom command to Busylight",
+             description = "Sends a custom command to the Busylight device. This allows for more advanced control, such as flashing patterns or specific lighting effects. See the Busylight documentation for available commands.")
+  @ApiResponses(value =
+  {
+    @ApiResponse(responseCode = "200",
+                 description = "Successfully sent the command to the Busylight",
+                 content =
+                 @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                          schema =
+                          @Schema(implementation = BusylightStatus.class))),
+    @ApiResponse(responseCode = "400",
+                 description = "Invalid command provided")
+  })
   @PostMapping("/command")
-  public String command(
+  public BusylightStatus command(
+    @Parameter(description = "busylightCommand", required = true)
     @RequestBody BusylightCommand busylightCommand)
   {
     log.debug("command: {}", busylightCommand);
-    busylightService.sendCommand(busylightCommand);
-    return "{ \"status\":\"OK\"}";
+    return busylightService.sendCommand(busylightCommand);
   }
 
 }

@@ -16,6 +16,7 @@
 package l9g.webapp.busylight;
 
 import l9g.webapp.busylight.model.BusylightCommand;
+import l9g.webapp.busylight.model.BusylightStatus;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hid4java.HidDevice;
@@ -44,11 +45,15 @@ public class BusylightService implements HidServicesListener
   @Getter
   private HidDevice busylightDevice;
 
+  @Getter
+  private BusylightStatus busylightStatus;
+
   public BusylightService(
     @Value("${usb-device.vendor-id:}") int vendorId,
     @Value("${usb-device.product-id:}") int productId
   )
   {
+    this.busylightStatus = new BusylightStatus();
     this.vendorId = vendorId;
     this.productId = productId;
     this.busylightDevice = null;
@@ -60,26 +65,40 @@ public class BusylightService implements HidServicesListener
     hidServices.start();
   }
 
-  public synchronized int sendCommand(BusylightCommand command)
+  public synchronized BusylightStatus sendCommand(BusylightCommand command)
   {
+    busylightStatus.setLastCommand(command);
+
     if(busylightDevice != null && command != null)
     {
       if(busylightDevice.isClosed() &&  ! busylightDevice.open())
       {
+        busylightStatus.setErrorMessage("Could not open device");
+        busylightStatus.setStatus(-1);
         log.error("Could not open device");
-        return -1;
       }
-
-      return busylightDevice.write(command.getMessage(), MESSAGE_LENGTH, (byte)0);
+      else
+      {
+        busylightStatus.setErrorMessage("OK");
+        busylightStatus.setStatus(0);
+        busylightDevice.write(command.getMessage(), MESSAGE_LENGTH, (byte)0);
+      }
     }
-    log.error("device not connected or wrong message length");
-    return -2;
+    else
+    {
+      busylightStatus.setErrorMessage("device not connected or command == null");
+      busylightStatus.setStatus(-2);
+      log.error("device not connected orcommand == null");
+    }
+
+    return busylightStatus;
   }
 
-  public void solidColor(String name)
+  public BusylightStatus solidColor(String name)
   {
     log.debug("solid color : {}", name);
     sendCommand(BusylightCommand.solidColor(name));
+    return busylightStatus;
   }
 
   @Override
@@ -95,6 +114,9 @@ public class BusylightService implements HidServicesListener
       synchronized(this)
       {
         busylightDevice = device;
+        busylightStatus.setConnected(true);
+        busylightStatus.setErrorMessage("OK");
+        busylightStatus.setStatus(0);
       }
     }
   }
@@ -112,6 +134,9 @@ public class BusylightService implements HidServicesListener
       synchronized(this)
       {
         busylightDevice = null;
+        busylightStatus.setConnected(false);
+        busylightStatus.setErrorMessage("busylight disconnected");
+        busylightStatus.setStatus(-3);
       }
     }
   }
