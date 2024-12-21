@@ -1,6 +1,10 @@
 spring:
   application:
     name: busylight
+  profiles:
+    active: default
+  config:
+    import: optional:file:config.yaml
 
 logging:
   pattern:
