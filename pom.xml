@@ -12,7 +12,7 @@
   
   <groupId>l9g.webapp</groupId>
   <artifactId>busylight</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
   <name>busylight</name>
   <description>A busylight web application for localhost.</description>
   
