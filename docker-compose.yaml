@@ -1,0 +1,22 @@
+
+services:
+  busylight:
+    image: bellsoft/liberica-openjdk-debian:21
+    container_name: busylight
+    privileged: true
+    command: [ "java", "-jar", "/busylight.jar" ]
+    devices:
+      - "/dev/bus/usb:/dev/bus/usb"
+    ports:
+      - 31415:31415
+    volumes:
+      - "./target/busylight.jar:/busylight.jar"
+      - "./config.yaml:/config.yaml"
+    environment:
+      - TZ=Europe/Berlin
+    healthcheck:
+      test: "curl -s http://localhost:9090/actuator/health | grep UP || exit 1"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
