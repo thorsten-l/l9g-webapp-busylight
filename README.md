@@ -10,6 +10,12 @@ The JAR file is executable.
 ### Linux
 `sudo ./target/busylight.jar`
 
+If you have docker installed on your Linux computer you could also use:
+
+`docker compose up -d` 
+
+**This is for Linux computers only, because neither macOS nor Windows has the device path `/dev/bus/usb` to pass into the container.**
+
 ### macOS
 `./target/busylight.jar`
 
