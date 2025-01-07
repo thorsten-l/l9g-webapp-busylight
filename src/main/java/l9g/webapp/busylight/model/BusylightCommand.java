@@ -37,28 +37,28 @@ import lombok.ToString;
 public class BusylightCommand
 {
     @Schema(description = "Command byte of the Busylight message.", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte command;
+    private int command;
 
     @Schema(description = "Code byte of the Busylight message. (e.g. 71='G' for green)", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "71")
-    private byte code;
+    private int code;
 
     @Schema(description = "Red color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte red;
+    private int red;
 
     @Schema(description = "Green color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte green;
+    private int green;
 
     @Schema(description = "Blue color value (0-255).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte blue;
+    private int blue;
 
     @Schema(description = "Advanced data byte 0 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte advanced0;
+    private int advanced0;
 
     @Schema(description = "Advanced data byte 1 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte advanced1;
+    private int advanced1;
 
     @Schema(description = "Advanced data byte 2 (purpose depends on the command).", type = "integer", format = "int32", minimum = "0", maximum = "255", example = "0")
-    private byte advanced2;
+    private int advanced2;
 
 
   @JsonIgnore
@@ -66,10 +66,10 @@ public class BusylightCommand
   {
     return new byte[]
     {
-      command,
-      code,
-      red, green, blue,
-      advanced0, advanced1, advanced2
+      (byte)(command & 0xff),
+      (byte)(code & 0xff),
+      (byte)(red & 0xff), (byte)(green & 0xff), (byte)(blue & 0xff),
+      (byte)(advanced0 & 0xff), (byte)(advanced1 & 0xff), (byte)(advanced2 & 0xff)
     };
   }
 
